@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SegFault Innovations</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<style>
+/* Reset & Base */
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Poppins',sans-serif;color:#fff;background: #0D1117;scroll-behavior:smooth;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+section{padding:80px 20px;position:relative;z-index:2;}
+.container{max-width:1200px;margin:0 auto;position:relative;z-index:2;}
+
+/* Glass Card Style */
+.glass-card{
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  border-radius:20px;
+  padding:30px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.glass-card:hover{
+  transform: translateY(-10px);
+  box-shadow:0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* ADDED: Medium Glow Effect for ALL glass-card elements (Team, Projects, Domains, Messages) */
+.glass-card {
+  position: relative; /* ADDED */
+  overflow: hidden;   /* ADDED */
+}
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,209,255,0.25), transparent 60%); /* medium neon glow */
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(0.6);
+  pointer-events: none;
+  z-index: 0; /* ensure behind content */
+}
+.glass-card:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ADDED: Extra visible medium glow & pop for project-card specifically */
+.project-card {
+  position: relative; /* ADDED */
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.project-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 0 20px rgba(0,209,255,0.35), 0 0 40px rgba(0,209,255,0.22);
+}
+.project-card::after {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: -40%;
+  width: 180%;
+  height: 180%;
+  background: radial-gradient(circle, rgba(0,209,255,0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(0.6);
+  pointer-events: none;
+  z-index: -1;
+}
+.project-card:hover::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Navbar */
+nav{
+  width:100%;position:fixed;top:0;left:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;padding:10px 50px;z-index:1000;
+}
+nav .logo{font-size:1.8rem;font-weight:600;color:#00D1FF;}
+nav ul{list-style:none;display:flex;gap:30px;}
+nav ul li a{font-size:1rem;transition:0.3s;}
+nav ul li a:hover{color:#FF6B35;}
+
+/* Hero Section */
+#hero{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100vh;}
+#hero h1{font-size:3rem;margin-bottom:20px;color:#00D1FF;}
+#hero p{font-size:1.2rem;margin-bottom:30px;max-width:700px;}
+#hero .btn{padding:12px 30px;background:#FF6B35;color:#fff;border:none;border-radius:10px;font-size:1rem;cursor:pointer;transition:0.3s;}
+#hero .btn:hover{background:#00D1FF;}
+
+/* About / Experience Section */
+#about h2,#projects h2,#contact h2,#domains h2,#support h2{font-size:2.5rem;margin-bottom:40px;text-align:center;}
+.team-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:40px;}
+.team-card{text-align:center;width:250px;}
+.team-card img{width:150px;height:150px;border-radius:50%;object-fit:cover;border:3px solid rgba(255,255,255,0.3);}
+.team-card h3{margin:15px 0;font-size:1.5rem;}
+.team-card p{margin:5px 0;font-size:1rem;color:#cfcfcf;}
+.team-card .experience{font-size:1.2rem;font-weight:500;margin:10px 0;}
+.team-card .skills{font-size:0.9rem;color:#a0a0a0;}
+
+/* Projects / Domains Section */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:30px;}
+.project-card{text-align:center;padding:20px;}
+.project-card h3{margin:15px 0;color:#00D1FF;}
+.project-card p{color:#cfcfcf;}
+
+/* Contact / Support Section */
+.contact-form{max-width:600px;margin:0 auto;display:flex;flex-direction:column;gap:15px;}
+.contact-form input,.contact-form textarea{padding:12px;border-radius:10px;border:none;background:rgba(255,255,255,0.1);color:#fff;}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:#ccc;}
+.contact-form button{padding:12px;background:#FF6B35;color:#fff;border:none;border-radius:10px;cursor:pointer;transition:0.3s;}
+.contact-form button:hover{background:#00D1FF;}
+
+/* Sign-in Modal */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);justify-content:center;align-items:center;z-index:2000;}
+.modal-content{background: rgba(255,255,255,0.08);backdrop-filter: blur(10px);padding:40px;border-radius:20px;width:300px;text-align:center;}
+.modal-content input{width:100%;margin-bottom:15px;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.1);color:#fff;}
+.modal-content button{padding:10px 20px;border:none;border-radius:10px;background:#FF6B35;color:#fff;cursor:pointer;transition:0.3s;}
+.modal-content button:hover{background:#00D1FF;}
+.modal .close{position:absolute;top:20px;right:30px;font-size:1.5rem;cursor:pointer;}
+
+/* Particles behind everything */
+#particles-js{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+/* ADDED — Messages box */
+#messagesBox{
+  max-width:600px;
+  margin:40px auto;
+  background:rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:15px;
+}
+
+/* ADDED: Glow for individual message items */
+#messagesList > div {
+  position: relative;
+  overflow: hidden;
+}
+#messagesList > div::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0,209,255,0.18), transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  transform: scale(0.6);
+  pointer-events: none;
+  z-index: -1;
+}
+#messagesList > div:hover::before {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Responsive */
+@media(max-width:1000px){.team-grid{flex-direction:column;align-items:center;}.projects-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<nav>
+  <div class="logo">SegFault Innovations</div>
+  <ul>
+    <li><a href="#hero">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#domains">Domains</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#" id="signinBtn">Sign-In</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <h1>Turning Ideas into Intelligent Apps</h1>
+  <p>We build AI-powered applications, full-stack web solutions, and modern frontend experiences that scale.</p>
+  <button class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Get in Touch</button>
+</section>
+
+<section id="about">
+  <div class="container">
+    <h2>About Us</h2>
+    <div class="team-grid">
+
+      <div class="team-card glass-card">
+        <img src="your-photo.jpg" alt="Snigdha">
+        <h3>Snigdha Saha</h3>
+        <p>Owner & Lead AI/Full-Stack Developer</p>
+        <div class="experience"><span class="counter" data-target="1">0</span>+ Years Experience</div>
+        <div class="skills">AI, Full-Stack Web, Backend, Frontend</div>
+      </div>
+
+      <div class="team-card glass-card">
+        <img src="sayantan.jpg" alt="Sayantan">
+        <h3>Sayantan Sahoo</h3>
+        <p> Co-founder & AI + Full-Stack + Android Developer</p>
+        <div class="experience"><span class="counter" data-target="1">0</span>+ Years Experience</div>
+        <div class="skills">AI, Full-Stack Web, Backend, Frontend</div>
+      </div>
+
+      <div class="team-card glass-card">
+        <img src="rup.jpg" alt="Rup">
+        <h3>Rup Debnath</h3>
+        <p> Co-founder & Frontend Developer</p>
+        <div class="experience"><span class="counter" data-target="1">0</span>+ Years Experience</div>
+        <div class="skills">Frontend, React, UI/UX</div>
+      </div>
+
+      <div class="team-card glass-card">
+        <img src="souradeep.jpg" alt="Souradeep">
+        <h3>Souradeep Chakraborty</h3>
+        <p>Co-founder & Frontend Developer</p>
+        <div class="experience"><span class="counter" data-target="1">0</span>+ Years Experience</div>
+        <div class="skills">Frontend, UI/UX, Responsive Design</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="domains">
+  <div class="container">
+    <h2>Domains We Handle</h2>
+    <div class="projects-grid">
+      <div class="project-card glass-card"><h3>AI Web Apps</h3><p>Chatbots, Recommendation Engines, Analytics Dashboards.</p></div>
+      <div class="project-card glass-card"><h3>Full-Stack Development</h3><p>End-to-end Web Apps, Authentication, Admin Panels.</p></div>
+      <div class="project-card glass-card"><h3>Frontend Development</h3><p>Landing Pages, Dashboards, UI/UX Design.</p></div>
+      <div class="project-card glass-card"><h3>Automation Tools</h3><p>Custom scripts, workflows, and integrations for efficiency.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <h2>Projects We can build </h2>
+    <div class="projects-grid">
+      <div class="project-card glass-card"><h3>AI Chatbot</h3><p>Dynamic AI-powered chatbot for customer service.</p></div>
+      <div class="project-card glass-card"><h3>Portfolio Dashboard</h3><p>Full-stack web app with analytics dashboards.</p></div>
+      <div class="project-card glass-card"><h3>Landing Page</h3><p>Interactive frontend landing page for startups.</p></div>
+    </div>
+  </div>
+  
+
+</section>
+<section id="sampleProject">
+  <div style="text-align:center;">
+    <h2>Our Sample Project</h2>
+    <div class="project-card glass-card" style="max-width:400px; margin:40px auto; padding:40px;">
+      <h3>Naari Udaan — AI‑powered Financial Literacy for Rural Women</h3>
+      <p>Multilingual AI/ML web platform promoting financial education and micro‑investment guidance for rural women. Built with Flask, JS, and AI/ML modules.</p>
+      <p><a href="https://github.com/Snigdha977/Naari_Udaan" target="_blank" style="color:#00D1FF; text-decoration:underline;">View on GitHub</a></p>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="contact">
+  <div class="container">
+
+    <h2>Contact & Support</h2>
+
+    <!-- ADDED: Email line (centered) -->
+    <p style="text-align:center;margin-bottom:30px;font-size:1.2rem;">
+  Email us directly at: 
+  <b><a href="mailto:snigdhasaha.student@gmail.com" style="color:#239bc3;">snigdhasaha.student@gmail.com</a></b>
+</p>
+
+
+    <form class="contact-form" id="contactForm">
+      <input id="cname" type="text" placeholder="Your Name" required>
+      <input id="cemail" type="email" placeholder="Your Email" required>
+      <input id="ctype" type="text" placeholder="Project Type" required>
+      <textarea id="cmsg" rows="5" placeholder="Describe your project..."></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+
+    <!-- ADDED: Messages received display -->
+    <div id="messagesBox">
+      <h3 style="text-align:center;margin-bottom:15px;">Messages Received</h3>
+      <div id="messagesList"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Sign-in Modal -->
+<div class="modal" id="signinModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h3>Sign-In</h3>
+    <input id="loginUser" type="text" placeholder="Email / Username">
+    <input id="loginPass" type="password" placeholder="Password">
+    <button id="signInBtnFinal">Sign In</button> <!-- ADDED ID -->
+  </div>
+</div>
+
+<script>
+// Particles Background
+particlesJS("particles-js", {
+  "particles": {
+    "number": {"value": 100,"density":{"enable":true,"value_area":800}},
+    "color":{"value":"#00D1FF"},
+    "shape":{"type":"circle"},
+    "opacity":{"value":0.5,"random":true},
+    "size":{"value":3,"random":true},
+    "line_linked":{"enable":true,"distance":150,"color":"#00D1FF","opacity":0.4,"width":1},
+    "move":{"enable":true,"speed":2,"direction":"none","random":true,"straight":false,"out_mode":"out"}
+  },
+  "interactivity":{
+    "detect_on":"canvas",
+    "events":{"onhover":{"enable":true,"mode":"grab"},"onclick":{"enable":true,"mode":"push"}},
+    "modes":{"grab":{"distance":140,"line_linked":{"opacity":0.6}},"push":{"particles_nb":4}}
+  },
+  "retina_detect":true
+});
+
+// Dynamic Experience Counters
+const counters = document.querySelectorAll('.counter');
+const options = {threshold: 0.5};
+const observer = new IntersectionObserver((entries, observer)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      const counter = entry.target;
+      const updateCount = () => {
+        const target = +counter.getAttribute('data-target');
+        const count = +counter.innerText;
+        const increment = target / 100;
+        if(count < target){
+          counter.innerText = Math.ceil(count + increment);
+          setTimeout(updateCount, 20);
+        } else { counter.innerText = target; }
+      };
+      updateCount();
+      observer.unobserve(counter);
+    }
+  });
+}, options);
+counters.forEach(counter=>observer.observe(counter));
+
+// Sign-in Modal open/close (ADJUSTED to prevent default jump) -- minimal change
+const modal = document.getElementById('signinModal');
+const signinLink = document.getElementById('signinBtn');
+signinLink.addEventListener('click', (e) => {
+  e.preventDefault(); // ADDED: prevent link jump
+  modal.style.display = 'flex';
+});
+document.querySelector('.modal .close').onclick = ()=>{ modal.style.display='none'; }
+window.onclick = e=>{ if(e.target == modal) modal.style.display='none'; }
+
+// --------- FIXED SIGN-IN LOGIC (validation) ---------
+// Replaces previous unconditional success handler.
+// Behavior: require both fields; if any empty -> alert and DO NOT sign in.
+// If both filled -> success alert, close modal, redirect to hero.
+document.getElementById("signInBtnFinal").addEventListener("click", function(e) {
+    // no form submit so prevent default is not necessary, but keep consistent
+    e.preventDefault();
+
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").value.trim();
+
+    if (user === "" || pass === "") {
+        alert("Please fill in both username/email and password to sign in.");
+        return; // do not sign in
+    }
+
+    // both fields filled -> proceed
+    alert("Sign-in successful!");
+    modal.style.display = "none";
+    // Redirect to hero (top of the page)
+    window.location.href = "#hero";
+});
+// ---------------------------------------------------
+
+// ADDED — Contact form save messages
+let savedMessages = JSON.parse(localStorage.getItem("sf_messages") || "[]");
+
+function escapeHtml(unsafe) {
+    return unsafe
+         .replaceAll("&", "&amp;")
+         .replaceAll("<", "&lt;")
+         .replaceAll(">", "&gt;")
+         .replaceAll('"', "&quot;")
+         .replaceAll("'", "&#039;");
+}
+
+function renderMessages() {
+    const box = document.getElementById("messagesList");
+    box.innerHTML = savedMessages.map(m => `
+        <div style="padding:10px;margin:10px 0;background:rgba(255,255,255,0.06);border-radius:10px;">
+          <b>Name:</b> ${escapeHtml(m.name)}<br>
+          <b>Email:</b> ${escapeHtml(m.email)}<br>
+          <b>Type:</b> ${escapeHtml(m.type)}<br>
+          <b>Message:</b> ${escapeHtml(m.msg)}
+        </div>
+    `).join("");
+}
+renderMessages();
+
+document.getElementById("contactForm").onsubmit = (e) => {
+    e.preventDefault();
+    let obj = {
+        name: document.getElementById("cname").value,
+        email: document.getElementById("cemail").value,
+        type: document.getElementById("ctype").value,
+        msg: document.getElementById("cmsg").value
+    };
+    savedMessages.push(obj);
+    localStorage.setItem("sf_messages", JSON.stringify(savedMessages));
+    renderMessages();
+    alert("Message sent successfully!");
+};
+</script>
+
+</body>
+</html>
