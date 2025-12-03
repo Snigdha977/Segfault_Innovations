@@ -57,7 +57,6 @@ A multilingual AI/ML web platform designed to empower rural women through financ
 
 📧 Email: snigdhasaha.freelancefirm@gmail.com
 
-(You can replace with your official one later.)
 
 💼 We are open for freelance projects, collaborations, and long-term development partnerships.
 
