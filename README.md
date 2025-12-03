@@ -13,11 +13,11 @@ Skills: AI, Full-Stack Web Development, Backend, Frontend
 
 👤 Sayantan Sahoo
 
-Co-Founder & AI + Full-Stack + Android Developer
+Co-Founder & AI + Full-Stack Developer
 
 Experience: 1+ Years
 
-Skills: AI, Full-Stack Web Development, Backend, Frontend, Android Development
+Skills: AI, Full-Stack Web Development, Backend, Frontend 
 
 👤 Rup Debnath
 
@@ -25,7 +25,7 @@ Co-Founder & Frontend Developer
 
 Experience: 1+ Years
 
-Skills: Frontend Development, React, UI/UX
+Skills: Frontend Development, React, UI/UX,Responsive Design 
 
 👤 Souradeep Chakraborty
 
@@ -33,5 +33,5 @@ Co-Founder & Frontend Developer
 
 Experience: 1+ Years
 
-Skills: Frontend Development, UI/UX, Responsive Design
+Skills: Frontend Development, UI/UX, Responsive Design, React
 
