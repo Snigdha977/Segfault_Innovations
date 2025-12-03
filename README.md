@@ -55,7 +55,7 @@ A multilingual AI/ML web platform designed to empower rural women through financ
 
 📬 Contact Us
 
-📧 Email: segfault.innovations@gmail.com
+📧 Email: snigdhasaha.freelancefirm@gmail.com
 
 (You can replace with your official one later.)
 
