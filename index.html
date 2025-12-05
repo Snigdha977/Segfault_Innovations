@@ -160,8 +160,16 @@ nav ul li a:hover{color:#FF6B35;}
 .modal-content h3{ margin: 10px 0 25px 0;}
 .modal-content input{width:100%;margin-bottom:15px;padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.1);color:#fff;}
 .modal-content button{padding:10px 20px;border:none;border-radius:10px;background:#FF6B35;color:#fff;cursor:pointer;transition:0.3s;}
-.modal-content button:hover{background:#00D1FF;}
+.modal-content button:hover{background:#00D1FF;transform: scale(1.02)}
 .modal .close{position:absolute;top:20px;right:30px;font-size:1.5rem;cursor:pointer;}
+.modal .modal-content .google-login{display: inline-block;width: 80%;text-align: center;padding: 12px 0;margin-top: 20px;font-size: 1rem;font-weight: 500;background:#FF6B35;color:#fff;border:none;border-radius: 12px;transition: 0.3s ease;
+}
+.modal .modal-content .google-login:hover {
+  background: #00D1FF;
+  color: #fff;
+  transform: scale(1.02);
+}
+
 
 /* Particles behind everything */
 #particles-js{
@@ -357,6 +365,7 @@ nav ul li a:hover{color:#FF6B35;}
     <input id="loginUser" type="text" placeholder="Email / Username">
     <input id="loginPass" type="password" placeholder="Password">
     <button id="signInBtnFinal">Sign In</button> <!-- ADDED ID -->
+     <a href="#" class="google-login">Sign-in with Google</a>
   </div>
 </div>
 <!-- Working Language Translator -->
