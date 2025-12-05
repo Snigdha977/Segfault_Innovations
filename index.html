@@ -314,7 +314,23 @@ nav ul li a:hover{color:#FF6B35;}
     <button id="signInBtnFinal">Sign In</button> <!-- ADDED ID -->
   </div>
 </div>
+<!-- Working Language Translator -->
+<div id="google_translate_element"></div>
 
+<script>
+  function loadTranslator() {
+    var script = document.createElement('script');
+    script.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
+    document.body.appendChild(script);
+
+    window.gtranslateSettings = {
+      default_language: "en",
+      languages: ["en", "hi", "bn", "fr", "de", "es"],  // add/remove languages here
+      wrapper_selector: "#google_translate_element"
+    };
+  }
+  loadTranslator();
+</script>
 <script>
 // Particles Background
 particlesJS("particles-js", {
