@@ -85,9 +85,44 @@ nav{
   width:100%;position:fixed;top:0;left:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);display:flex;justify-content:space-between;align-items:center;padding:10px 50px;z-index:1000;
 }
 nav .logo{font-size:1.8rem;font-weight:600;color:#00D1FF;}
-nav ul{list-style:none;display:flex;gap:30px;}
+nav ul{list-style:none;display:flex;gap:30px;align-items:center;}
 nav ul li a{font-size:1rem;transition:0.3s;}
 nav ul li a:hover{color:#FF6B35;}
+
+/* Notification Icon & Badge */
+#notificationContainer{position:fixed;top:70px;right:50px;cursor:pointer;z-index:999;}
+#notificationIcon{position:relative;font-size:1.5rem;transition:0.3s;display:flex;align-items:center;color:#fff;}
+#notificationIcon:hover{color:#FF6B35;}
+.notification-badge{position:absolute;top:-8px;right:-12px;background:#FF6B35;color:#fff;border-radius:50%;width:22px;height:22px;display:flex;justify-content:center;align-items:center;font-size:0.8rem;font-weight:600;}
+
+/* Notification Popup */
+.notification-popup{
+  display:none;
+  position:absolute;
+  top:45px;
+  right:0;
+  background:rgba(255,255,255,0.95);
+  color:#000;
+  border-radius:12px;
+  width:350px;
+  max-height:400px;
+  overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,0.3);
+  z-index:1001;
+  padding:0;
+}
+.notification-popup.show{display:block;}
+.notification-popup-header{padding:15px;border-bottom:2px solid #00D1FF;background:#f8f9fa;border-radius:12px 12px 0 0;font-weight:600;color:#333;}
+.notification-item{padding:12px 15px;border-bottom:1px solid #eee;transition:0.2s;cursor:pointer;position:relative;}
+.notification-item:last-child{border-bottom:none;}
+.notification-item:hover{background:#f0f0f0;}
+.notification-item.unviewed{background:#fff9f0;border-left:4px solid #FF6B35;}
+.notification-item.viewed{opacity:0.7;background:#fafafa;}
+.notification-item-name{font-weight:600;color:#00D1FF;}
+.notification-item-email{font-size:0.85rem;color:#666;margin:5px 0;}
+.notification-item-type{font-size:0.85rem;background:#e3f2fd;color:#1976d2;padding:3px 8px;border-radius:4px;display:inline-block;margin:5px 0;}
+.notification-item-time{font-size:0.75rem;color:#999;margin-top:5px;}
+.notification-item-badge{position:absolute;top:12px;right:15px;background:#FF6B35;color:#fff;border-radius:50%;width:8px;height:8px;}
 
 /* Hero Section */
 #hero{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:100vh;}
@@ -190,6 +225,16 @@ nav ul li a:hover{color:#FF6B35;}
     <li><a href="#" id="signinBtn">Sign-In</a></li>
   </ul>
 </nav>
+
+<div id="notificationContainer">
+  <a href="#" id="notificationIcon">🔔
+    <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+  </a>
+  <div class="notification-popup" id="notificationPopup">
+    <div class="notification-popup-header">Form Notifications</div>
+    <div id="notificationList"></div>
+  </div>
+</div>
 
 <section id="hero">
   <h1>Turning Ideas into Intelligent Apps</h1>
@@ -408,6 +453,74 @@ document.getElementById("signInBtnFinal").addEventListener("click", function(e) 
 });
 // ---------------------------------------------------
 
+// ADDED — Notification System
+let notifications = JSON.parse(localStorage.getItem("sf_notifications") || "[]");
+
+function updateNotificationBadge() {
+    const badge = document.getElementById("notificationBadge");
+    const unviewedCount = notifications.filter(n => !n.viewed).length;
+    if(unviewedCount > 0) {
+        badge.style.display = "flex";
+        badge.innerText = unviewedCount > 9 ? "9+" : unviewedCount;
+    } else {
+        badge.style.display = "none";
+    }
+}
+
+function limitNotifications() {
+    if(notifications.length > 7) {
+        notifications = notifications.slice(0, 7);
+        localStorage.setItem("sf_notifications", JSON.stringify(notifications));
+    }
+}
+
+function renderNotifications() {
+    const list = document.getElementById("notificationList");
+    if(notifications.length === 0) {
+        list.innerHTML = '<div style="padding:20px;text-align:center;color:#999;">No notifications yet</div>';
+        return;
+    }
+    list.innerHTML = notifications.map((n, i) => `
+        <div class="notification-item ${n.viewed ? 'viewed' : 'unviewed'}" data-index="${i}">
+            ${!n.viewed ? '<div class="notification-item-badge"></div>' : ''}
+            <div class="notification-item-name">${escapeHtml(n.name)}</div>
+            <div class="notification-item-email">📧 ${escapeHtml(n.email)}</div>
+            <div class="notification-item-type">Project: ${escapeHtml(n.type)}</div>
+            <div style="font-size:0.85rem;color:#555;margin:8px 0;line-height:1.4;">
+                <strong>Message:</strong><br>${escapeHtml(n.msg).substring(0, 100)}${n.msg.length > 100 ? '...' : ''}
+            </div>
+            <div class="notification-item-time">${n.timestamp}</div>
+        </div>
+    `).join("");
+    
+    document.querySelectorAll(".notification-item").forEach(item => {
+        item.addEventListener("click", () => {
+            const index = parseInt(item.getAttribute("data-index"));
+            notifications[index].viewed = true;
+            localStorage.setItem("sf_notifications", JSON.stringify(notifications));
+            updateNotificationBadge();
+            renderNotifications();
+        });
+    });
+}
+
+document.getElementById("notificationIcon").addEventListener("click", (e) => {
+    e.preventDefault();
+    const popup = document.getElementById("notificationPopup");
+    popup.classList.toggle("show");
+});
+
+document.addEventListener("click", (e) => {
+    const popup = document.getElementById("notificationPopup");
+    const icon = document.getElementById("notificationIcon");
+    if(!popup.contains(e.target) && !icon.contains(e.target)) {
+        popup.classList.remove("show");
+    }
+});
+
+updateNotificationBadge();
+renderNotifications();
+
 // ADDED — Contact form save messages
 let savedMessages = JSON.parse(localStorage.getItem("sf_messages") || "[]");
 
@@ -441,9 +554,28 @@ document.getElementById("contactForm").onsubmit = (e) => {
         type: document.getElementById("ctype").value,
         msg: document.getElementById("cmsg").value
     };
+    
+    let notificationObj = {
+        name: obj.name,
+        email: obj.email,
+        type: obj.type,
+        msg: obj.msg,
+        timestamp: new Date().toLocaleString(),
+        viewed: false
+    };
+    
     savedMessages.push(obj);
+    notifications.unshift(notificationObj);
+    limitNotifications();
+    
     localStorage.setItem("sf_messages", JSON.stringify(savedMessages));
+    localStorage.setItem("sf_notifications", JSON.stringify(notifications));
+    
     renderMessages();
+    updateNotificationBadge();
+    renderNotifications();
+    
+    document.getElementById("contactForm").reset();
     alert("Message sent successfully!");
 };
 </script>
