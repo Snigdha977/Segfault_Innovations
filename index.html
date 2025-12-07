@@ -608,8 +608,7 @@ window.onload = function () {
   google.accounts.id.initialize({
     client_id: "214662024412-c0qvohpaucqbl0q4ahevl58906eio687.apps.googleusercontent.com",
     callback: handleCredentialResponse,
-    ux_mode: "popup",
-    login_uri: "https://segf.netlify.app"
+    ux_mode: "popup"
   });
   google.accounts.id.renderButton(
     document.getElementById("google-signin-button"),
