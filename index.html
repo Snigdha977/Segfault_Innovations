@@ -6,6 +6,9 @@
 <title>SegFault Innovations</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
+<!-- Google Sign-In Client Setup -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 /* Reset & Base */
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -230,9 +233,13 @@ nav ul li a:hover{color:#FF6B35;}
     <li><a href="#domains">Domains</a></li>
     <li><a href="#projects">Projects</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#" id="signinBtn">Sign-In</a></li>
+    <li><a href="#" id="signinBtn">Sign In</a></li>
+    
   </ul>
 </nav>
+  
+
+
 
 <div id="notificationContainer">
   <a href="#" id="notificationIcon">🔔
@@ -365,7 +372,9 @@ nav ul li a:hover{color:#FF6B35;}
     <input id="loginUser" type="text" placeholder="Email / Username">
     <input id="loginPass" type="password" placeholder="Password">
     <button id="signInBtnFinal">Sign In</button> <!-- ADDED ID -->
-     <a href="#" class="google-login">Sign-in with Google</a>
+     <div style="display: flex; justify-content: center; margin-top: 20px;">
+      <div id="google-signin-button"></div>
+    </div>
   </div>
 </div>
 <!-- Working Language Translator -->
@@ -587,7 +596,25 @@ document.getElementById("contactForm").onsubmit = (e) => {
     document.getElementById("contactForm").reset();
     alert("Message sent successfully!");
 };
-</script>
+// --- Google Sign In ---
+function handleCredentialResponse(response) {
+  console.log("Encoded JWT ID token: " + response.credential);
+  // Send this token to your backend for verification and authentication
+  alert("Google Sign-In Successful! Check the console for the token.");
+  document.getElementById('signinModal').style.display = 'none';
+}
 
-</body>
-</html>
+window.onload = function () {
+  google.accounts.id.initialize({
+    client_id: "214662024412-up1ld9hfp5mdvh3p680ahc10nk5u0elp.apps.googleusercontent.com",
+    callback: handleCredentialResponse,
+    ux_mode: "redirect",
+    login_uri: "https://segfaultinnovations.netlify.app"
+  });
+  google.accounts.id.renderButton(
+    document.getElementById("google-signin-button"),
+    { theme: "outline", size: "large", shape: "pill" }  // Customization attributes
+  );
+  // google.accounts.id.prompt(); // Optional: Triggers the One Tap prompt
+};
+</script>
