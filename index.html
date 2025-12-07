@@ -608,7 +608,7 @@ window.onload = function () {
   google.accounts.id.initialize({
     client_id: "214662024412-up1ld9hfp5mdvh3p680ahc10nk5u0elp.apps.googleusercontent.com",
     callback: handleCredentialResponse,
-    ux_mode: "redirect",
+    ux_mode: "popup",
     login_uri: "https://segfaultinnovations.netlify.app"
   });
   google.accounts.id.renderButton(
